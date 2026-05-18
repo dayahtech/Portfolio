@@ -1,18 +1,68 @@
 import { motion } from "framer-motion";
-import { Award, ExternalLink, ImageOff, Layers, Search } from "lucide-react";
-import { useMemo, useState } from "react";
+import {
+  Award,
+  ChevronLeft,
+  ChevronRight,
+  ExternalLink,
+  ImageOff,
+  Layers,
+  Search,
+} from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { certificates } from "../data/portfolioData";
 import Modal from "./Modal";
 
 const categories = ["All", "Education", "Tech", "General"];
 
 function CertificateModal({ certificate, onClose }) {
-  if (!certificate) return null;
+  const [imageIndex, setImageIndex] = useState(0);
+  const touchStartX = useRef(null);
+  const images = certificate?.images ?? (certificate?.image ? [certificate.image] : []);
+  const usesImageGallery = Boolean(certificate?.images?.length);
+  const hasMultipleImages = images.length > 1;
+  const safeImageIndex = images.length
+    ? Math.min(imageIndex, images.length - 1)
+    : 0;
+  const certificateImage = images[safeImageIndex];
   const links =
-    certificate.links?.filter((link) => {
+    certificate?.links?.filter((link) => {
       const url = link.href ?? link.url;
       return url && url !== "#";
     }) ?? [];
+
+  useEffect(() => {
+    setImageIndex(0);
+  }, [certificate?.id]);
+
+  const showPreviousImage = () => {
+    setImageIndex((current) => (current === 0 ? images.length - 1 : current - 1));
+  };
+
+  const showNextImage = () => {
+    setImageIndex((current) => (current === images.length - 1 ? 0 : current + 1));
+  };
+
+  const handleTouchStart = (event) => {
+    if (!hasMultipleImages) return;
+    touchStartX.current = event.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (event) => {
+    if (!hasMultipleImages || touchStartX.current === null) return;
+
+    const distance = touchStartX.current - event.changedTouches[0].clientX;
+    touchStartX.current = null;
+
+    if (Math.abs(distance) < 45) return;
+
+    if (distance > 0) {
+      showNextImage();
+    } else {
+      showPreviousImage();
+    }
+  };
+
+  if (!certificate) return null;
 
   return (
     <Modal
@@ -21,9 +71,56 @@ function CertificateModal({ certificate, onClose }) {
       title={certificate.title}
     >
       <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-        {certificate.image ? (
+        {certificateImage && usesImageGallery ? (
+          <div
+            className="grid justify-items-center gap-3"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
+            <div className="flex max-w-full justify-center">
+              <img
+                src={certificateImage}
+                alt={`${certificate.title} ${safeImageIndex + 1}`}
+                className="max-h-[520px] w-auto max-w-full rounded-3xl border border-white/12 object-contain"
+              />
+            </div>
+            {hasMultipleImages ? (
+              <div className="flex items-center justify-center gap-4">
+                <button
+                  type="button"
+                  onClick={showPreviousImage}
+                  className="grid h-10 w-10 place-items-center rounded-full border border-white/16 bg-white/8 text-white transition hover:border-cyan-300/45 hover:bg-cyan-300/18"
+                  aria-label="Previous certificate"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+                <div className="flex gap-2">
+                  {images.map((image, index) => (
+                    <button
+                      key={image}
+                      type="button"
+                      onClick={() => setImageIndex(index)}
+                      className={`h-2.5 w-2.5 rounded-full transition ${
+                        index === safeImageIndex ? "bg-cyan-200" : "bg-white/25"
+                      }`}
+                      aria-label={`Show certificate ${index + 1} of ${images.length}`}
+                    />
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={showNextImage}
+                  className="grid h-10 w-10 place-items-center rounded-full border border-white/16 bg-white/8 text-white transition hover:border-cyan-300/45 hover:bg-cyan-300/18"
+                  aria-label="Next certificate"
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </div>
+            ) : null}
+          </div>
+        ) : certificateImage ? (
           <img
-            src={certificate.image}
+            src={certificateImage}
             alt={certificate.title}
             className="aspect-[4/3] w-full rounded-3xl border border-white/12 bg-white object-contain"
           />
@@ -51,7 +148,7 @@ function CertificateModal({ certificate, onClose }) {
           <p className="mt-5 leading-7 text-slate-300">{certificate.description}</p>
 
           <h4 className="mt-6 font-display text-lg font-semibold text-white">
-            What I Learned
+            {certificate.learnedTitle ?? "What I Learned"}
           </h4>
           <ul className="mt-3 grid gap-2">
             {certificate.whatILearned.map((item) => (
@@ -63,7 +160,7 @@ function CertificateModal({ certificate, onClose }) {
           </ul>
 
           <h4 className="mt-6 font-display text-lg font-semibold text-white">
-            What I Practiced
+            {certificate.practicedTitle ?? "What I Practiced"}
           </h4>
           <div className="mt-3 grid gap-3">
             {certificate.whatIPracticed.map((practice) => (
@@ -126,9 +223,19 @@ export default function Certificates() {
           : certificate.category === activeCategory,
       )
       .filter((certificate) =>
-        normalizedSearch
-          ? certificate.title.toLowerCase().includes(normalizedSearch)
-          : true,
+        normalizedSearch ? (
+          [
+            certificate.title,
+            certificate.category,
+            certificate.platform,
+            certificate.topic,
+            certificate.description,
+          ]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase()
+            .includes(normalizedSearch)
+        ) : true,
       )
       .sort((first, second) => first.title.localeCompare(second.title));
   }, [activeCategory, searchTerm]);
@@ -136,11 +243,11 @@ export default function Certificates() {
   return (
     <section id="certificates" className="section-wrap">
       <div className="section-heading">
-        <p className="eyebrow">Certificates</p>
-        <h2>Verified certificates and achievements.</h2>
+        <p className="eyebrow">Achievements & Certificates</p>
+        <h2>Certificates, awards, and recognition.</h2>
         <p>
-          This section is only for certificates and achievement records I can
-          show.
+          This section highlights verified records and achievements from
+          education, tech, and general activities.
         </p>
       </div>
 
@@ -166,7 +273,7 @@ export default function Certificates() {
             type="search"
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
-            placeholder="Search certificates"
+            placeholder="Search records"
             className="w-full bg-transparent text-sm text-white outline-none placeholder:text-slate-500"
           />
         </label>
@@ -187,9 +294,9 @@ export default function Certificates() {
                 transition={{ duration: 0.42, delay: index * 0.05 }}
                 whileHover={{ y: -6 }}
               >
-                {certificate.image ? (
+                {certificate.image || certificate.images?.[0] ? (
                   <img
-                    src={certificate.image}
+                    src={certificate.image ?? certificate.images[0]}
                     alt={certificate.title}
                     className="block aspect-video w-full bg-white object-cover object-top"
                   />
@@ -221,8 +328,8 @@ export default function Certificates() {
               transition={{ duration: 0.42 }}
             >
               {searchTerm.trim()
-                ? "No certificates match your search."
-                : "No certificates yet in this category."}
+                ? "No records match your search."
+                : "No records yet in this category."}
             </motion.div>
           )}
         </div>

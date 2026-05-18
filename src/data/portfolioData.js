@@ -396,14 +396,14 @@ export const skills = [
   {
     name: "Problem Solving",
     category: "Soft Skills",
-    level: "Strong",
+    level: "Intermediate",
     description: "Applied debugging and logical thinking during development.",
     related: [],
   },
   {
     name: "Time Management",
     category: "Soft Skills",
-    level: "Strong",
+    level: "Intermediate",
     description:
       "Managed academic projects, internship tasks, and development timelines.",
     related: [],
@@ -411,21 +411,21 @@ export const skills = [
   {
     name: "Responsibility",
     category: "Soft Skills",
-    level: "Strong",
+    level: "Intermediate",
     description: "Handled independent project development responsibilities.",
     related: [],
   },
   {
     name: "Willingness to Learn",
     category: "Soft Skills",
-    level: "Strong",
+    level: "Intermediate",
     description: "Actively learning new technologies and development practices.",
     related: [],
   },
   {
     name: "Adaptability",
     category: "Soft Skills",
-    level: "Strong",
+    level: "Intermediate",
     description: "Quickly adapts to new tools and workflows.",
     related: [],
   },
@@ -764,6 +764,65 @@ export const projects = [
 ];
 
 export const certificates = [
+  {
+    id: "spm-certificate",
+    title: "SPM and CEFR Records",
+    category: "Education",
+    topic: "Secondary Education",
+    platform: "Ministry of Education Malaysia",
+    date: "March 2023",
+    images: [
+      assetPath("assets/certificates/SPM.png"),
+      assetPath("assets/certificates/CEFR.png"),
+    ],
+    description:
+      "Completed Sijil Pelajaran Malaysia (SPM), including the related CEFR English proficiency record issued with the SPM results.",
+    learnedTitle: "Record Details",
+    whatILearned: [
+      "Completed national secondary school examination",
+      "SPM certificate and CEFR English proficiency record grouped together",
+      "Elective subjects included Geography, Additional Science, and Home Science",
+    ],
+    practicedTitle: "Available Records",
+    whatIPracticed: [
+      {
+        title: "SPM and CEFR Records",
+        description:
+          "Available SPM and CEFR images are grouped here as one education record.",
+      },
+    ],
+    links: [],
+  },
+  {
+    id: "deans-list-diploma",
+    title: "Dean's List Awards",
+    category: "Education",
+    topic: "Academic Excellence",
+    platform: "Vision University College",
+    date: "Multiple Semesters",
+    images: [
+      assetPath("assets/certificates/DipDean1.png"),
+      assetPath("assets/certificates/DipDean2.png"),
+      assetPath("assets/certificates/DipDean3.png"),
+    ],
+    description:
+      "Recognized for academic excellence across multiple semesters during Diploma in Information Technology studies. Three certificate records are shown, with an additional Semester 5 Dean's List achievement noted with GPA 4.00; the certificate copy is unavailable.",
+    learnedTitle: "Recognition Details",
+    whatILearned: [
+      "Dean's List recognition across multiple diploma semesters",
+      "Academic excellence in Diploma in Information Technology coursework",
+      "Semester 5 Dean's List achievement with GPA 4.00; certificate copy unavailable",
+    ],
+    practicedTitle: "Available Records",
+    whatIPracticed: [
+      {
+        title: "Dean's List Certificates",
+        description:
+          "Available certificate images are grouped here as one achievement record to keep the portfolio clean.",
+      },
+    ],
+    links: [],
+  },
   {
     id: "python-project",
     title: "Create Your First Python Program From UST",
