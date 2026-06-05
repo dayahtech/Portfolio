@@ -24,7 +24,7 @@ export const profile = {
   summary:
     "Completed Diploma in Information Technology studies with hands-on experience building web applications, backend systems, and modern frontend interfaces. Developed projects including forum platforms, e-commerce systems, and responsive portfolio websites while continuously improving technical skills through practical development experience.",
   location: "Malaysia",
-  currentStatus: "Open to Opportunities",
+  currentStatus: "Software Support",
   typingRoles: [
     "Full-Stack Developer",
     "Backend Learner",
@@ -67,6 +67,13 @@ export const aboutMilestones = [
     title: "Completed Diploma in Information Technology",
     description:
       "Completed diploma coursework, internship, and final year project while awaiting official transcript and graduation documents.",
+  },
+  {
+    id: "software-support-role",
+    date: "April 2026 - Present",
+    title: "Software Support Full-time Role",
+    description:
+      "Assists clients with SQL Payroll and SQL Accounting system setup, troubleshooting, and daily operations.",
   },
 ];
 
