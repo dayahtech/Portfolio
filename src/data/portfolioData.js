@@ -70,7 +70,7 @@ export const aboutMilestones = [
   },
   {
     id: "software-support-role",
-    date: "April 2026 - Present",
+    date: "June 2026 - Present",
     title: "Software Support Full-time Role",
     description:
       "Assists clients with SQL Payroll and SQL Accounting system setup, troubleshooting, and daily operations.",
